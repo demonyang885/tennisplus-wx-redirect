@@ -1,4 +1,4 @@
-const CACHE = "memory-explorer-v1";
+const CACHE = "memory-explorer-v2";
 const ROOT = new URL("./", self.location.href).href;
 const SHELL = [ROOT, new URL("manifest.webmanifest", ROOT).href, new URL("favicon.svg", ROOT).href];
 
@@ -16,6 +16,18 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+        return response;
+      }).catch(() => caches.match(event.request).then((cached) => cached || caches.match(ROOT))),
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
       const copy = response.clone();
