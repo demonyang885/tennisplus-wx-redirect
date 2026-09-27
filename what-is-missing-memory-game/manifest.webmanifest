@@ -1,0 +1,12 @@
+{
+  "name": "小小記憶家 · What is missing?",
+  "short_name": "小小記憶家",
+  "description": "物件與位置瞬間記憶遊戲",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5fbff",
+  "theme_color": "#f5fbff",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
