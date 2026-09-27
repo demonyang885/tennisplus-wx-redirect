@@ -1,6 +1,10 @@
-const CACHE = "memory-explorer-v2";
+const CACHE = "memory-explorer-v3";
 const ROOT = new URL("./", self.location.href).href;
-const SHELL = [ROOT, new URL("manifest.webmanifest", ROOT).href, new URL("favicon.svg", ROOT).href];
+const SHELL = [
+  new Request(ROOT, { cache: "reload" }),
+  new URL("manifest.webmanifest", ROOT).href,
+  new URL("favicon.svg", ROOT).href,
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
@@ -19,7 +23,7 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).then((response) => {
+      fetch(event.request, { cache: "no-store" }).then((response) => {
         const copy = response.clone();
         caches.open(CACHE).then((cache) => cache.put(event.request, copy));
         return response;
